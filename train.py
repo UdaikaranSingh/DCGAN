@@ -57,7 +57,7 @@ random.seed(1)
 learning_rate = 0.2e-4
 beta1 = 0.5
 beta2 = 0.999
-num_epochs = 10
+num_epochs = 2
 epsilon = 1e-8
 
 optimizer = optim.Adam(list(encoder.parameters()) + list(decoder.parameters()) 
@@ -92,6 +92,8 @@ for epoch in range(num_epochs):
 
 	for images, steps in data_loader:
 
+		print(count)
+
 		if (images.shape[0] != batch_size):
 			break
 
@@ -113,17 +115,18 @@ for epoch in range(num_epochs):
 				f1 = encoder(x1)
 				f2 = encoder(x2)
 
-				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).type(torch.cuda.FloatTensor)
+				m = torch.autograd.Variable(torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).type(torch.cuda.FloatTensor),requires_grad=False)
+				ones = torch.autograd.Variable(torch.ones(batch_size, encoded_size).type(torch.cuda.FloatTensor), requires_grad = False)
 
-				f12 = m * f1 + (torch.ones(batch_size, encoded_size).type(torch.cuda.FloatTensor) - m) * f2
+				f12 = m * f1 
+				f12 = f12 + (ones - m) * f2
 
 				x3 = decoder(f12)
 				f3 = encoder(x3)
 
-				f31 = m * f3 + (torch.ones(batch_size, encoded_size).type(torch.cuda.FloatTensor) - m) * f1
+				f31 = m * f3 + (ones - m) * f1
 
 				x4 = decoder(f31)
-				
 			else:
 				x2 = Variable(images).type(torch.FloatTensor)
 
@@ -141,7 +144,8 @@ for epoch in range(num_epochs):
 
 				x4 = decoder(f31)
 
-			loss_l2 = l2_loss(x1, x4)
+			#target = Variable(x1, volatile=False)
+			loss_l2 = l2_loss(x4,x1.detach())
 			dicsrimination_loss = torch.mean(torch.log(discriminator(x1) + epsilon) + torch.log(1 - discriminator(x3) + epsilon))
 			x_cat = torch.cat((x1, x2, x3), dim = 1)
 			classifer_loss = BCE_loss(torch.sigmoid(classifier(x_cat)), m)
