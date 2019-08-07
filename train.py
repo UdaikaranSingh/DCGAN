@@ -109,22 +109,36 @@ for epoch in range(num_epochs):
 
 			if cuda_available:
 				x2 = Variable(images).type(torch.cuda.FloatTensor)
+
+				f1 = encoder(x1)
+				f2 = encoder(x2)
+
+				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).cuda()
+
+				f12 = m * f1 + (torch.ones(batch_size, encoded_size).cuda() - m) * f2
+
+				x3 = decoder(f12)
+				f3 = encoder(x3)
+
+				f31 = m * f3 + (torch.ones(batch_size, encoded_size).cuda() - m) * f1
+
+				x4 = decoder(f31)
 			else:
 				x2 = Variable(images).type(torch.FloatTensor)
 
-			f1 = encoder(x1)
-			f2 = encoder(x2)
+				f1 = encoder(x1)
+				f2 = encoder(x2)
 
-			m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1)
+				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1)
 
-			f12 = m * f1 + (torch.ones(batch_size, encoded_size) - m) * f2
+				f12 = m * f1 + (torch.ones(batch_size, encoded_size) - m) * f2
 
-			x3 = decoder(f12)
-			f3 = encoder(x3)
+				x3 = decoder(f12)
+				f3 = encoder(x3)
 
-			f31 = m * f3 + (torch.ones(batch_size, encoded_size) - m) * f1
+				f31 = m * f3 + (torch.ones(batch_size, encoded_size) - m) * f1
 
-			x4 = decoder(f31)
+				x4 = decoder(f31)
 
 			loss_l2 = l2_loss(x1, x4)
 			dicsrimination_loss = torch.mean(torch.log(discriminator(x1) + epsilon) + torch.log(1 - discriminator(x3) + epsilon))
