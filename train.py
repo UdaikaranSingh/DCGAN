@@ -113,30 +113,31 @@ for epoch in range(num_epochs):
 				f1 = encoder(x1)
 				f2 = encoder(x2)
 
-				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).cuda()
+				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).type(torch.cuda.FloatTensor)
 
-				f12 = m * f1 + (torch.ones(batch_size, encoded_size).cuda() - m) * f2
+				f12 = m * f1 + (torch.ones(batch_size, encoded_size).type(torch.cuda.FloatTensor) - m) * f2
 
 				x3 = decoder(f12)
 				f3 = encoder(x3)
 
-				f31 = m * f3 + (torch.ones(batch_size, encoded_size).cuda() - m) * f1
+				f31 = m * f3 + (torch.ones(batch_size, encoded_size).type(torch.cuda.FloatTensor) - m) * f1
 
 				x4 = decoder(f31)
+				
 			else:
 				x2 = Variable(images).type(torch.FloatTensor)
 
 				f1 = encoder(x1)
 				f2 = encoder(x2)
 
-				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1)
+				m = torch.FloatTensor(batch_size, encoded_size).uniform_(0, 1).type(torch.FloatTensor)
 
-				f12 = m * f1 + (torch.ones(batch_size, encoded_size) - m) * f2
+				f12 = m * f1 + (torch.ones(batch_size, encoded_size).type(torch.FloatTensor) - m) * f2
 
 				x3 = decoder(f12)
 				f3 = encoder(x3)
 
-				f31 = m * f3 + (torch.ones(batch_size, encoded_size) - m) * f1
+				f31 = m * f3 + (torch.ones(batch_size, encoded_size).type(torch.FloatTensor) - m) * f1
 
 				x4 = decoder(f31)
 
