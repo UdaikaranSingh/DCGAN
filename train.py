@@ -68,7 +68,7 @@ optimizer = optim.Adam(list(encoder.parameters()) + list(decoder.parameters())
 transform = transforms.Compose([transforms.Resize((128, 128)),
     transforms.ToTensor()
 ])
-dataset_path = os.path.dirname(os.getcwd()) + "/datasets/celeba"
+dataset_path = os.path.dirname(os.getcwd()) + "/datasets/rendered_images"
 training_data = ImageFolder(dataset_path, transform = transform)
 data_loader = torch.utils.data.DataLoader(training_data,
                                           batch_size= batch_size,
