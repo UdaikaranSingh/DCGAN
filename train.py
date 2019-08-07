@@ -57,7 +57,7 @@ random.seed(1)
 learning_rate = 0.2e-4
 beta1 = 0.5
 beta2 = 0.999
-num_epochs = 2
+num_epochs = 10
 epsilon = 1e-8
 
 optimizer = optim.Adam(list(encoder.parameters()) + list(decoder.parameters()) 
@@ -92,7 +92,7 @@ for epoch in range(num_epochs):
 
 	for images, steps in data_loader:
 
-		print(count)
+		#print(count)
 
 		if (images.shape[0] != batch_size):
 			break
