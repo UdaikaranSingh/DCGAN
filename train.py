@@ -96,7 +96,10 @@ for epoch in range(num_epochs):
 			break
 
 		elif (count% 2 == 0):
-			x1 = images
+			if cuda_available:
+				x1 = Variable(images).type(torch.cuda.FloatTensor)
+			else:
+				x1 = Variable(images).type(torch.FloatTensor)
 
 		else: 
 			#case of steps % 2 == 1
@@ -104,7 +107,10 @@ for epoch in range(num_epochs):
 			decoder.zero_grad()
 			classifier.zero_grad()
 
-			x2 = images
+			if cuda_available:
+				x2 = Variable(images).type(torch.cuda.FloatTensor)
+			else:
+				x2 = Variable(images).type(torch.FloatTensor)
 
 			f1 = encoder(x1)
 			f2 = encoder(x2)
