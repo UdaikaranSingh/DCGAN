@@ -158,7 +158,7 @@ for epoch in range(num_epochs):
 		count = count + 1
 
 	#saving models:
-	path = "decoder_mdoel.pth"
+	path = "decoder_model.pth"
 	torch.save(decoder.state_dict(), path)
 	path = "encoder_model.pth"
 	torch.save(encoder.state_dict(), path)
