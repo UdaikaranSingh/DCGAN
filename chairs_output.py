@@ -35,7 +35,7 @@ if cuda_available:
 	classifier = Classifier(batch_size, encoded_size).cuda()
 	discriminator = Discriminator(batch_size, encoded_size).cuda()
 
-	if os.path.exists("enocder_model_chair.pth"):
+	if os.path.exists("encoder_model_chair.pth"):
 		print("Loading in Model")
 		encoder.load_state_dict(torch.load("encoder_model_chair.pth"))
 		decoder.load_state_dict(torch.load("decoder_model_chair.pth"))
@@ -82,7 +82,7 @@ for step, (images, _) in enumerate(data_loader, 0):
     else:
         imgs = Variable(images.type(torch.FloatTensor))
         
-    z_pred = encoder(images).cpu().detach().numpy()
+    z_pred = encoder(imgs).cpu().detach().data.numpy()
     address = re.findall(patt,data_loader.dataset.imgs[step][0])
     
     output.append((z_pred, address))
