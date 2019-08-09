@@ -73,7 +73,7 @@ data_loader = torch.utils.data.DataLoader(training_data,
 n = len(data_loader.dataset.imgs)
 
 output = []
-patt = "celeba/.*"
+patt = "/rendered_images/.*"
 for step, (images, _) in enumerate(data_loader, 0):
     if (step % 1000 == 0):
         print(step / n)
